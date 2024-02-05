@@ -59,10 +59,10 @@ class Schelling:
         # tell imshow about color map so that only set colors are used
         plt.imshow(self.map,interpolation='nearest', cmap = cmap,norm=norm)
         plt.axis('off')
-        plt.title('iteration = ' + str(iteration))
+        plt.title("P = " + str(self.population_frac) + ", T = " + str(self.satisfy_threshold) + ", Iteration = " + str(iteration))
 
         # save plot
-        plt.savefig("iteration" + str(iteration) + ".png")
+        plt.savefig("iteration" + str(iteration) + "p" + str(int(self.population_frac*100)) + "t" + str(self.satisfy_threshold) + ".png")
         
         # Display the plot
         plt.show()
