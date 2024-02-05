@@ -7,7 +7,7 @@ class Schelling:
 
     
 
-    def __init__(self, population_frac, satisfy_threshold) -> None:
+    def __init__(self, population_frac, satisfy_threshold):
         # Define the relative positions of the 8 neighbors
         self.neighbor_offsets_8 = [(-1, -1), (-1, 0), (-1, 1),
                     (0, -1),           (0, 1),
@@ -41,7 +41,7 @@ class Schelling:
     def inbounds(point):
         return 50 > point[0] >= 0 and 50 > point[1] >= 0
 
-    def count_neighbors(self, type, point) -> int:
+    def count_neighbors(self, type, point):
         count = 0
         for offset in self.neighbor_offsets_8:
             temp_point = (point[0] + offset[0], point[1] + offset[1])
@@ -50,7 +50,7 @@ class Schelling:
         return count
     
     
-    def plot_map(self):
+    def plot_map(self, iteration):
         cmap_colors = [(1, 1, 1), (1, 0, 0), (0, 0, 1)]  # White, Red, Blue
         cmap = LinearSegmentedColormap.from_list('custom', cmap_colors, N=3)
         bounds=[0, 1, 2, 3]
@@ -59,6 +59,10 @@ class Schelling:
         # tell imshow about color map so that only set colors are used
         plt.imshow(self.map,interpolation='nearest', cmap = cmap,norm=norm)
         plt.axis('off')
+        plt.title('iteration = ' + str(iteration))
+
+        # save plot
+        plt.savefig("iteration" + str(iteration) + ".png")
         
         # Display the plot
         plt.show()
@@ -87,14 +91,16 @@ class Schelling:
     
     def run_sim(self, steps):
         for i in range(steps):
-            if i % 10 == 0:
-                self.plot_map()
-            for x in range(50):
-                for y in range(50):
-                    closest_match = self.find_closest_satisfied(self.satisfy_threshold, (x, y))
-                    if closest_match != (x, y) and closest_match != (-1, -1):
-                        self.map[closest_match] = self.map[x, y]
-                        self.map[x, y] = 0
-        self.plot_map()
+            iteration = i // 2500
+            if i % (steps//4) == 0:
+                self.plot_map(iteration)
+            i = i % 2500           
+            x = i//50
+            y = i % 50
+            closest_match = self.find_closest_satisfied(self.satisfy_threshold, (x, y))
+            if closest_match != (x, y) and closest_match != (-1, -1):
+                self.map[closest_match] = self.map[x, y]
+                self.map[x, y] = 0
+        self.plot_map(steps//2500)
             
             
