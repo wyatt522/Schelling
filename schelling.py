@@ -87,12 +87,14 @@ class Schelling:
     
     def run_sim(self, steps):
         for i in range(steps):
-            print(i)
+            if i % 10 == 0:
+                self.plot_map()
             for x in range(50):
                 for y in range(50):
                     closest_match = self.find_closest_satisfied(self.satisfy_threshold, (x, y))
                     if closest_match != (x, y) and closest_match != (-1, -1):
                         self.map[closest_match] = self.map[x, y]
                         self.map[x, y] = 0
+        self.plot_map()
             
             

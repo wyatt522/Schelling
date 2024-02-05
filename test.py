@@ -3,8 +3,7 @@ import schelling
 def main():
     print("This is the main function")
     model = schelling.Schelling(0.8, 4)
-    model.run_sim(10)
-    model.plot_map()
+    model.run_sim(100)
     
 
 if __name__ == "__main__":
