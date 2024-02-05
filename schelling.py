@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap, BoundaryNorm, LinearSegmentedColormap
+from collections import deque
 
 class Schelling:
 
@@ -61,4 +62,37 @@ class Schelling:
         
         # Display the plot
         plt.show()
+
+    def find_closest_satisfied(self, t_satisfy, cell):
+        queue = deque()
+        visited = set()
+
+        queue.append(cell)
+        visited.add(cell)
+
+        while queue:
+            current_cell = queue.popleft()
+
+            if self.count_neighbors(self.map[cell], current_cell) >= t_satisfy and self.map[current_cell] == 0:
+                return current_cell
+
+            for offset in self.neighbor_offsets_8:
+                temp_point = (current_cell[0] + offset[0], current_cell[1] + offset[1])
+                if temp_point not in visited and Schelling.inbounds(temp_point):
+                    queue.append(temp_point)
+                    visited.add(temp_point)
+
+        # nothing found return negatives to signal error
+        return (-1, -1)
     
+    def run_sim(self, steps):
+        for i in range(steps):
+            print(i)
+            for x in range(50):
+                for y in range(50):
+                    closest_match = self.find_closest_satisfied(self.satisfy_threshold, (x, y))
+                    if closest_match != (x, y) and closest_match != (-1, -1):
+                        self.map[closest_match] = self.map[x, y]
+                        self.map[x, y] = 0
+            
+            
